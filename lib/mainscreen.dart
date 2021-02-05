@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:toast/toast.dart';
 import 'detailscreen.dart';
-import 'package:http/http.dart' as http;
-import 'user.dart';
 import 'donate.dart';
+import 'user.dart';
 
 class MainScreen extends StatefulWidget {
   final User user;
 
   const MainScreen({Key key, this.user}) : super(key: key);
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-   GlobalKey<RefreshIndicatorState> refreshKey;
+  GlobalKey<RefreshIndicatorState> refreshKey;
 
   List donatelist;
   double screenHeight, screenWidth;
-  String titlecenter = "Loading Items...";
+  int quantity = 1;
+  String titlecenter = "Loading...";
 
   @override
   void initState() {
@@ -33,27 +36,11 @@ class _MainScreenState extends State<MainScreen> {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
-   return SafeArea(
+    return SafeArea(
         child: Scaffold(
       appBar: AppBar(
         title: Text('Share Loving'),
-        backgroundColor: Colors.black,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0, top: 8.0),
-            child: GestureDetector(
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: <Widget>[
-                  Icon(
-                    Icons.shopping_cart,
-                    size: 36.0,
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
+        backgroundColor: Colors.red,
       ),
       body: Column(
         children: [
@@ -104,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
                                                         new Icon(
                                                   Icons.broken_image,
                                                   size: screenWidth / 2,
-),
+                                                ),
                                               )),
                                           Positioned(
                                             child: Container(
@@ -122,7 +109,7 @@ class _MainScreenState extends State<MainScreen> {
                                                   children: [
                                                     Text(
                                                         donatelist[index]
-                                                            ['rating'],
+                                                            ['donateid'],
                                                         style: TextStyle(
                                                             color:
                                                                 Colors.black)),
@@ -136,14 +123,12 @@ class _MainScreenState extends State<MainScreen> {
                                         ],
                                       ),
                                       SizedBox(height: 5),
-                                      Text(
+                                       Text(
                                         donatelist[index]['donatename'],
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      Text("RM " +
-                                          donatelist[index]['price']),
                                     ],
                                   ),
                                 ),
@@ -156,14 +141,12 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _loadDonate() async {
-
-    
-       ProgressDialog pr = new ProgressDialog(context,
+    ProgressDialog pr = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false);
-    pr.style(message: "Loading Items...");
+    pr.style(message: "Loading...");
     await pr.show();
-http.post("http://amongusss.com/ShareLoving/php/load_donate.php", body: {
-    }).then((res) {
+    http.post("http://amongusss.com/ShareLoving/php/load_donate.php",
+        body: {}).then((res) {
       if (res.body == "nodata") {
         donatelist = null;
         setState(() {
@@ -183,18 +166,19 @@ http.post("http://amongusss.com/ShareLoving/php/load_donate.php", body: {
 
   _loadDonateDetail(int index) {
     print(donatelist[index]['donateid']);
-    Donate donate = new Donate(
-        donateid: donatelist[index]['donateid'],
+     Donate donate = new Donate(
+       donateid: donatelist[index]['donateid'],
         donatename: donatelist[index]['donatename'],
         donateimage: donatelist[index]['donateimage'],
-	    	description: donatelist[index]['description'],
-        price: donatelist[index]['price']);
-        
+        description: donatelist[index]['description'],
+        price: donatelist[index]['price']
+        );
 
     Navigator.push(
-      context,
+        context,
         MaterialPageRoute(
-          builder: (BuildContext context) => DetailScreen(donate: donate,)
-        ));
+            builder: (BuildContext context) => DetailScreen(
+                  donate: donate,
+                )));
   }
 }

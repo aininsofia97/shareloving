@@ -96,17 +96,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             )
           ],
         ),
-                    Row(
-                      children: <Widget>[
-                        Checkbox(
-                          value: _rememberMe,
-                          onChanged: (bool value) {
-                            _onChange(value);
-                          },
-                        ),
-                        Text('Remember Me', style: TextStyle(fontSize: 16))
-                      ],
-                    ),
                     SizedBox(height: 10),
                     MaterialButton(
                       shape: RoundedRectangleBorder(

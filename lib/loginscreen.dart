@@ -118,7 +118,7 @@ Future<void> _onLogin() async {
       List userdata = res.body.split(",");
       if (userdata[0] == "success") {
         Toast.show(
-          "Login Succes",
+          "Login Success",
           context,
           duration: Toast.LENGTH_LONG,
           gravity: Toast.TOP,
@@ -154,6 +154,7 @@ Future<void> _onLogin() async {
 
   void _onForgot() {
     print('Forgot');
+       
   }
 
  void _onChange(bool value) {
